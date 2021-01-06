@@ -29,22 +29,19 @@ async def _token_parser(resp):
 async def POST(session):
     async with session.post('http://rasp.uatk.ru/students', allow_redirects=True, headers=HEADERS,
                             data=_tokens) as resp_post:
-        print(resp_post._request_info)
-        print(resp_post.headers)
-        print(resp_post.status)
+        return await resp_post.text()
 
 
 
 async def main():
     async with aiohttp.ClientSession() as session:
-        async with session.get('http://rasp.uatk.ru') as resp:
-            print(resp.status)
+        async with session.get('http://rasp.uatk.ru/students') as resp:
             await _token_parser(resp)
-            await POST(session)
+            post_obj = await POST(session)
+            await parser_schedule(post_obj)
 
+async def parser_schedule(something_resp_after_post):
+    soup_post = BeautifulSoup(something_resp_after_post, 'lxml')
+    print(soup_post.find(name='div', attrs={'class':'text-center'}))
+#    if soup_post.text==''
 
-
-
-if __name__=='__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
