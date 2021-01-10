@@ -1,5 +1,3 @@
-from .welcoming import dp
-from .Menu_buttons import dp
-from .echo import dp
+from .start_parse import dp
 
 __all__ = ["dp"]

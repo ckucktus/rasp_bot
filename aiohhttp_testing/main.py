@@ -1,6 +1,7 @@
 import aiohttp
-import asyncio
 from bs4 import BeautifulSoup
+
+
 
 HEADERS = {
 'Host': 'rasp.uatk.ru',
@@ -14,16 +15,18 @@ HEADERS = {
 
 _tokens = {
 'group': 'С1-17',
-'date': '2021-01-04'
+#'date': '2021-01-04'
 }
 
 
-async def _token_parser(resp):
+async def _token_parser(resp, data_time):
     html_get = await resp.text()
     soup_get = BeautifulSoup(html_get, 'html.parser')
     item = soup_get.find(name='meta', attrs={'name':'csrf-token'})
     csrf_token_get = item.get('content')
+    _tokens['date'] = data_time
     _tokens['_token'] = csrf_token_get
+
 
 
 async def POST(session):
@@ -33,15 +36,35 @@ async def POST(session):
 
 
 
-async def main():
+async def main(data_time):
     async with aiohttp.ClientSession() as session:
         async with session.get('http://rasp.uatk.ru/students') as resp:
-            await _token_parser(resp)
+            await _token_parser(resp, data_time)
             post_obj = await POST(session)
-            await parser_schedule(post_obj)
+            return await parser_schedule(post_obj)
 
 async def parser_schedule(something_resp_after_post):
     soup_post = BeautifulSoup(something_resp_after_post, 'lxml')
-    print(soup_post.find(name='div', attrs={'class':'text-center'}))
-#    if soup_post.text==''
+    tbody = soup_post.find(name='tbody')
+    rasp=''
+    if not tbody:
+        return "Расписания нет"
+    else:
+        for child in tbody.children:
+            if child.name == 'tr':
+                count=0
+                for item in child.children:
+                    if item != '\n':
+                        if count==1:
+                            rasp += item.string + '\n'
+                        if count==2:
+                            rasp += item.string + '\n'
+                        if count==5: #доп условие ибо кабинета может не быть
+                            rasp += f'Кабинет: {item.string}' + '\n'               #проставить экраны
+                        count+=1
+                else:
+                    rasp+='\n'
+    return rasp
+
+
 

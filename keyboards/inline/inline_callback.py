@@ -1,3 +1,3 @@
 from aiogram.utils.callback_data import CallbackData
 
-inline_callback = CallbackData('klick', 'action')
+data_pick_callback = CallbackData('data', 'action', 'def_data')
