@@ -20,7 +20,7 @@ _tokens = {
 
 
 async def _token_parser(resp, data_time):
-    html_get = await resp.text()
+    html_get = await resp.content.read()
     soup_get = BeautifulSoup(html_get, 'html.parser')
     item = soup_get.find(name='meta', attrs={'name':'csrf-token'})
     csrf_token_get = item.get('content')
@@ -32,8 +32,7 @@ async def _token_parser(resp, data_time):
 async def POST(session):
     async with session.post('http://rasp.uatk.ru/students', allow_redirects=True, headers=HEADERS,
                             data=_tokens) as resp_post:
-        return await resp_post.text()
-
+        return await resp_post.content.read()
 
 
 async def main(data_time):

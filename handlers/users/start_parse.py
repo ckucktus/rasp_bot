@@ -26,4 +26,4 @@ async def data_query(call: CallbackQuery, callback_data: dict):
     data_time = callback_data['def_data']
     answer = await main.main(data_time)
     await call.answer()
-    await call.message.answer(text=f'{answer}')#text=f'{answer}'
+    await call.message.answer(text=f'Расписание за {data_time}:\n{answer}')#text=f'{answer}'
