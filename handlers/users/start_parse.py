@@ -6,7 +6,7 @@ from keyboards.inline.inline_callback import data_pick_callback
 from keyboards.inline.parse import data_pick_keyboard
 
 from loader import dp
-from aiohhttp_testing import main
+from scraping_data import main
 
 @dp.message_handler(Command('start'))
 async def start_command(message:Message):

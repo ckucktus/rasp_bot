@@ -5,18 +5,6 @@ from keyboards.inline.inline_callback import data_pick_callback
 
 
 
-'''    async with aiohttp.ClientSession() as session:
-        delt = time.time()
-        async with session.get('http://worldtimeapi.org/api/timezone/Asia/Yekaterinburg') as resp:
-            json_answer = await resp.json()
-            data_api = json_answer.get("datetime").split('T')[0]
-            tuple_time = tuple(map(int, data_api.split('-')))
-            define_datetime = datetime.date(*tuple_time)
-            print(time.time()-delt)
-            await session.close()
-            return define_datetime'''
-
-
 def data_pick_keyboard():
     day = datetime.date.today()
     buttons = InlineKeyboardMarkup(row_width=1,
